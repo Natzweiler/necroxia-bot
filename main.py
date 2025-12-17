@@ -15,9 +15,9 @@ def main():
 
     # 3. Definimos la función de ataque
     # Esta función se la pasaremos al robot para que la use mientras camina.
+    
     def checar_si_hay_enemigo():
-        # Usamos pyautogui para tomar una foto SOLO de ese pedacito
-        # grayscale=True hace que la imagen sea en blanco y negro (más rápido)
+        # Tomamos la captura
         img = pyautogui.screenshot(region=(
             region_battle['left'], 
             region_battle['top'], 
@@ -25,25 +25,29 @@ def main():
             region_battle['height']
         ))
         
-        # ANÁLISIS MATEMÁTICO (Didáctico)
-        # Convertimos la imagen a una lista de números (colores)
+        # --- CORRECCIÓN AQUÍ ---
+        # Convertimos la imagen a Escala de Grises ('L') 
+        # Esto hace que los pixeles sean números simples (0-255) en vez de trios (R,G,B)
+        img = img.convert('L')  
+        # -----------------------
+
+        # Ahora el resto del código matemático funcionará perfecto
         colores = list(img.getdata())
         
-        # Si todos los pixeles son casi iguales (gris fondo), la diferencia
-        # entre el color máximo y mínimo será muy pequeña.
-        max_color = max(colores) # El pixel más brillante
-        min_color = min(colores) # El pixel más oscuro
+        if not colores: # Seguridad por si la lista está vacía
+            return None
+
+        max_color = max(colores) 
+        min_color = min(colores) 
         diferencia = max_color - min_color
         
-        # UMBRAL: Si la diferencia es mayor a 10, significa que hay letras o colores 
-        # (rojo/verde) que contrastan con el fondo gris.
+        # UMBRAL:
         if diferencia > 10: 
-            # Calculamos el centro para hacer clic ahí
             center_x = region_battle['left'] + (region_battle['width'] // 2)
             center_y = region_battle['top'] + (region_battle['height'] // 2)
-            return (center_x, center_y) # Retornamos coordenadas del enemigo
+            return (center_x, center_y)
         
-        return None # No hay nadie
+        return None
 
     # 4. Interfaz de Usuario (Consola)
     print("--- NECROXIA BOT v1.0 ---")

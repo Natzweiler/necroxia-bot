@@ -65,7 +65,7 @@ class Recorder:
         except:
             print("Ventana del juego no encontrada. Asegúrate de que 'Necroxia Origin' esté abierto.")
             return
-        for paso in enumerate (pasos):
+        for i, paso in enumerate (pasos):
             if keyboard.is_pressed('esc'):
                 print("Reproducción detenida por el usuario.")
                 keyboard.release(paso['tecla'])
