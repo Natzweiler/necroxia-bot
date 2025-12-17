@@ -2,6 +2,8 @@ import keyboard
 import time
 import json
 import threading
+import pygetwindow as gw
+import time
 
 class Recorder:
     def __init__(self):
@@ -44,41 +46,73 @@ class Recorder:
     def detener_grabacion(self):
         self.grabando = False
         keyboard.unhook_all()
-        print(f"⏹️ Grabación finalizada. Total pasos: {len(self.ruta)}")
+        print(f"Grabación finalizada. Total pasos: {len(self.ruta)}")
         self.guardar_ruta()
 
     def guardar_ruta(self, archivo="ruta_cavebot.json"):
         with open(archivo, "w") as f:
             json.dump(self.ruta, f, indent=4)
-        print(f"💾 Ruta guardada en {archivo}")
+        print(f"Ruta guardada en {archivo}")
 
-    def reproducir_ruta(self, archivo="ruta_cavebot.json"):
+    def reproducir_ruta(self, archivo="ruta_cavebot.json"):           
         print("Reproduciendo ruta")
         with open(archivo, "r") as f:
             pasos = json.load(f)
-        
-        for paso in pasos:
+        # Asegurarse de que la ventana del juego este activa para que no se presione en otras pantallas
+        try:
+            juego_ventana = gw.getWindowsWithTitle("Necroxia Origin")[0]
+        except:
+            print("Ventana del juego no encontrada. Asegúrate de que 'Necroxia Origin' esté abierto.")
+            return
+        for paso in enumerate (pasos):
+            if keyboard.is_pressed('esc'):
+                print("Reproducción detenida por el usuario.")
+                keyboard.release(paso['tecla'])
+                return False
 
-            print(f"Caminando: {paso['tecla']}")
+            if not juego_ventana.isActive:
+                print("Juego en segundo plano.")
+                
+                while not juego_ventana.isActive:
+                    time.sleep(1) #espera a que la ventana se active
+                print("Juego activo, continuando reproducción.")
+                time.sleep(0.5)    
+                    
+                    
+                    
+            #Ejecuta el paso        
+           # print(f"Caminando: {paso['tecla']}") se comento esta linea para evitar spam en consola
             keyboard.press(paso['tecla'])
             time.sleep(paso['duracion'])
             keyboard.release(paso['tecla'])
             
             #pausa entre pasos para evitar solapamientos
             time.sleep(0.1)
-
+        return True
+    #main basica de pruebas
 if __name__ == "__main__":
     rec = Recorder()
-    accion = input("(1: Grabar, 2: Reproducir): ")
+    accion = input("1: Grabar | 2: Reproducir Bucle: ")
     
     if accion == "1":
         rec.iniciar_grabacion()
+        
     elif accion == "2":
-        print("Cambiando al juego en 3 segundos") #tienes que cambiar de ventana porque sino se mueve en la ventana que esteusando
+        print("Cambiando al juego en 3 seg...")
         time.sleep(3)
-        while True: # repetir ruta solo para pruebas
-            rec.reproducir_ruta()
-    if accion == "3":
-        print("Saliendo")
-        exit()
+        
+        vueltas = 0
+        while True:
+            vueltas += 1
+            print(f"\n Iniciando vuelta #{vueltas}")
+            termino_ok = rec.reproducir_ruta()
+            
+            # Si termino_ok es falso significa que presionamos ESC para detener
+            if not termino_ok:
+                print("Detencion exitosa.")
+                break
+            
+            # Pequeño descanso entre vueltas completas
+            time.sleep(1)
+
         
