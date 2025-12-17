@@ -1,0 +1,46 @@
+[
+    {
+        "tecla": "flecha derecha",
+        "duracion": 0.12
+    },
+    {
+        "tecla": "flecha izquierda",
+        "duracion": 0.088
+    },
+    {
+        "tecla": "flecha arriba",
+        "duracion": 0.072
+    },
+    {
+        "tecla": "flecha arriba",
+        "duracion": 0.064
+    },
+    {
+        "tecla": "flecha arriba",
+        "duracion": 0.064
+    },
+    {
+        "tecla": "flecha derecha",
+        "duracion": 0.072
+    },
+    {
+        "tecla": "flecha arriba",
+        "duracion": 0.056
+    },
+    {
+        "tecla": "flecha arriba",
+        "duracion": 0.064
+    },
+    {
+        "tecla": "flecha abajo",
+        "duracion": 0.056
+    },
+    {
+        "tecla": "flecha abajo",
+        "duracion": 0.056
+    },
+    {
+        "tecla": "flecha abajo",
+        "duracion": 0.056
+    }
+]
