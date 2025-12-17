@@ -4,6 +4,7 @@ import json
 import threading
 import pygetwindow as gw
 import time
+import pyautogui
 
 class Recorder:
     def __init__(self):
@@ -54,7 +55,7 @@ class Recorder:
             json.dump(self.ruta, f, indent=4)
         print(f"Ruta guardada en {archivo}")
 
-    def reproducir_ruta(self, archivo="ruta_cavebot.json"):           
+    def reproducir_ruta(self, archivo="ruta_cavebot.json", callback_enemigo=None):           
         print("Reproduciendo ruta")
         with open(archivo, "r") as f:
             pasos = json.load(f)
@@ -69,7 +70,19 @@ class Recorder:
                 print("Reproducción detenida por el usuario.")
                 keyboard.release(paso['tecla'])
                 return False
-
+            if callback_enemigo:
+                pos_enemigo = callback_enemigo()
+                if pos_enemigo:
+                    print("Enemigo detectado, deteniendo reproducción.")
+                    keyboard.release(paso['tecla'])
+                    
+                    pyautogui.click(pos_enemigo[0], pos_enemigo[1])
+                    
+                    while callback_enemigo():
+                        if keyboard.is_pressed('esc'): return False
+                        time.sleep(1) #espera a que el enemigo desaparezca
+                    
+                        pyautogui.click(juego_ventana.left +50, juego_ventana.top +50) #click fuera del battlelist para cerrar
             if not juego_ventana.isActive:
                 print("Juego en segundo plano.")
                 
@@ -89,30 +102,5 @@ class Recorder:
             #pausa entre pasos para evitar solapamientos
             time.sleep(0.1)
         return True
-    #main basica de pruebas
-if __name__ == "__main__":
-    rec = Recorder()
-    accion = input("1: Grabar | 2: Reproducir Bucle: ")
-    
-    if accion == "1":
-        rec.iniciar_grabacion()
-        
-    elif accion == "2":
-        print("Cambiando al juego en 3 seg...")
-        time.sleep(3)
-        
-        vueltas = 0
-        while True:
-            vueltas += 1
-            print(f"\n Iniciando vuelta #{vueltas}")
-            termino_ok = rec.reproducir_ruta()
-            
-            # Si termino_ok es falso significa que presionamos ESC para detener
-            if not termino_ok:
-                print("Detencion exitosa.")
-                break
-            
-            # Pequeño descanso entre vueltas completas
-            time.sleep(1)
 
         
