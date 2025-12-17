@@ -29,3 +29,20 @@ class Vision:
         # Lógica de Template Matching aquí
         # Retorna las coordenadas (x, y) si encuentra la imagen
         pass
+    
+    def buscar_enemigo(self):
+        #logica para capturar pantalla
+        screen = self.get_screenshot()
+        screen_gray = cv2.cvtColor(screen, cv2.COLOR_BGR2GRAY)
+        
+        #logica para buscar enemigo
+        #debemos tener una imagen de referencia del enemigo en los assets llamada battle_icon.png
+        
+        #ajustamos manualmente el battlelist 
+        x,y,w,h = 1740, 50 , 150, 40
+        
+        recorte_battle = screen[y:y+h, x:x+w]
+        std_dev = np.std(recorte_battle)
+        if std_dev > 5: #umbral para detectar cambios
+            return (x+w//2, y+h//2) #retorna el centro del area del battlelist
+        return None
