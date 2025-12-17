@@ -1,4 +1,3 @@
-# src/movement_recorder.py
 import keyboard
 import time
 import json
@@ -75,11 +74,11 @@ if __name__ == "__main__":
     if accion == "1":
         rec.iniciar_grabacion()
     elif accion == "2":
-        print("Cambiando al juego en 3 segundos...") #tienes que cambiar de ventana porque sino se mueve en la ventana que esteusando
+        print("Cambiando al juego en 3 segundos") #tienes que cambiar de ventana porque sino se mueve en la ventana que esteusando
         time.sleep(3)
         while True: # repetir ruta solo para pruebas
             rec.reproducir_ruta()
     if accion == "3":
-        print("Saliendo...")
+        print("Saliendo")
         exit()
         
